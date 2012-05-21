@@ -63,6 +63,16 @@ class ModuleTasks extends \BackendModule
 	 */
 	protected $blnAdvanced = true;
 
+	/**
+	 * Import needed classes
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		
+		// Import Input class so it is v2.x compatible, could be called static instead (only v3)
+		$this->import('Input');
+	}
 
 	/**
 	 * Generate the module
