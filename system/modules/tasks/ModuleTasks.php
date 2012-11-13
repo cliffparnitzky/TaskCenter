@@ -64,17 +64,6 @@ class ModuleTasks extends \BackendModule
 	protected $blnAdvanced = true;
 
 	/**
-	 * Load needed classes
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		
-		// load the class so it's 2.x compatible, for v3 get/post etc could be used statically
-		$this->Import('Input');
-	}
-
-	/**
 	 * Generate the module
 	 * @return void
 	 */
@@ -86,9 +75,7 @@ class ModuleTasks extends \BackendModule
 		// Check the request token (see #4007)
 		if (isset($_GET['act']))
 		{
-			$this->import('RequestToken');
-
-			if (!isset($_GET['rt']) || !$this->RequestToken->validate($this->Input->get('rt')))
+			if (!isset($_GET['rt']) || !\RequestToken::validate(\Input::get('rt')))
 			{
 				$this->Session->set('INVALID_TOKEN_URL', $this->Environment->request);
 				$this->redirect('contao/confirm.php');
@@ -96,7 +83,7 @@ class ModuleTasks extends \BackendModule
 		}
 
 		// Dispatch
-		switch ($this->Input->get('act'))
+		switch (\Input::get('act'))
 		{
 			case 'create':
 				$this->createTask();
@@ -248,7 +235,7 @@ class ModuleTasks extends \BackendModule
 		$this->Template->statusLabel = $GLOBALS['TL_LANG']['tl_task']['status'][0];
 
 		// Create task
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks' && $this->blnSave)
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks' && $this->blnSave)
 		{
 			$time = time();
 			$deadline = new \Date($this->Template->deadline->value, $GLOBALS['TL_CONFIG']['dateFormat']);
@@ -279,7 +266,7 @@ class ModuleTasks extends \BackendModule
 			$this->Database->prepare("INSERT INTO tl_task_status %s")->set($arrSet)->execute();
 
 			// Notify user
-			if ($this->Input->post('notify'))
+			if (\Input::post('notify'))
 			{
 				$objUser = $this->Database->prepare("SELECT email FROM tl_user WHERE id=?")
 										  ->limit(1)
@@ -321,22 +308,22 @@ class ModuleTasks extends \BackendModule
 		$this->Template->historyClass = (isset($fs['tl_tasks']['history_legend']) && !$fs['tl_tasks']['history_legend']) ? ' collapsed' : '';
 
 		$this->Template->goBack = $GLOBALS['TL_LANG']['MSC']['goBack'];
-		$this->Template->headline = sprintf($GLOBALS['TL_LANG']['tl_task']['edit'][1], $this->Input->get('id'));
+		$this->Template->headline = sprintf($GLOBALS['TL_LANG']['tl_task']['edit'][1], \Input::get('id'));
 
 		$objTask = $this->Database->prepare("SELECT *, (SELECT name FROM tl_user u WHERE u.id=t.createdBy) AS creator FROM tl_task t WHERE id=?")
 								  ->limit(1)
-								  ->execute($this->Input->get('id'));
+								  ->execute(\Input::get('id'));
 
 		if ($objTask->numRows < 1)
 		{
-			$this->log('Invalid task ID "' . $this->Input->get('id') . '"', 'ModuleTask editTask()', TL_ERROR);
+			$this->log('Invalid task ID "' . \Input::get('id') . '"', 'ModuleTask editTask()', TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
 		}
 
 		// Check if the user is allowed to edit the task
 		if (!$this->User->isAdmin && $objTask->createdBy != $this->User->id)
 		{
-			$this->log('Not enough permissions to edit task ID "' . $this->Input->get('id') . '"', 'ModuleTask editTask()', TL_ERROR);
+			$this->log('Not enough permissions to edit task ID "' . \Input::get('id') . '"', 'ModuleTask editTask()', TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
 		}
 
@@ -351,7 +338,7 @@ class ModuleTasks extends \BackendModule
 
 		// Get the status
 		$objStatus = $this->Database->prepare("SELECT *, (SELECT name FROM tl_user u WHERE u.id=s.assignedTo) AS name FROM tl_task_status s WHERE pid=? ORDER BY tstamp")
-									->execute($this->Input->get('id'));
+									->execute(\Input::get('id'));
 
 		while($objStatus->next())
 		{
@@ -375,7 +362,7 @@ class ModuleTasks extends \BackendModule
 		$this->Template->comment = $this->getCommentWidget();
 
 		// Update task
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks' && $this->blnSave)
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks' && $this->blnSave)
 		{
 			// Update task
 			if ($this->blnAdvanced)
@@ -383,13 +370,13 @@ class ModuleTasks extends \BackendModule
 				$deadline = new \Date($this->Template->deadline->value, $GLOBALS['TL_CONFIG']['dateFormat']);
 
 				$this->Database->prepare("UPDATE tl_task SET title=?, deadline=? WHERE id=?")
-							   ->execute($this->Template->title->value, $deadline->dayBegin, $this->Input->get('id'));
+							   ->execute($this->Template->title->value, $deadline->dayBegin, \Input::get('id'));
 			}
 
 			// Insert status
 			$arrSet = array
 			(
-				'pid' => $this->Input->get('id'),
+				'pid' => \Input::get('id'),
 				'tstamp' => time(),
 				'assignedTo' => $this->Template->assignedTo->value,
 				'status' => $this->Template->status->value,
@@ -400,7 +387,7 @@ class ModuleTasks extends \BackendModule
 			$this->Database->prepare("INSERT INTO tl_task_status %s")->set($arrSet)->execute();
 
 			// Notify user
-			if ($this->Input->post('notify'))
+			if (\Input::post('notify'))
 			{
 				$objUser = $this->Database->prepare("SELECT email FROM tl_user WHERE id=?")
 										  ->limit(1)
@@ -447,18 +434,18 @@ class ModuleTasks extends \BackendModule
 	{
 		$objTask = $this->Database->prepare("SELECT * FROM tl_task WHERE id=?")
 								  ->limit(1)
-								  ->execute($this->Input->get('id'));
+								  ->execute(\Input::get('id'));
 
 		if ($objTask->numRows < 1)
 		{
-			$this->log('Invalid task ID "' . $this->Input->get('id') . '"', 'ModuleTask deleteTask()', TL_ERROR);
+			$this->log('Invalid task ID "' . \Input::get('id') . '"', 'ModuleTask deleteTask()', TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
 		}
 
 		// Check if the user is allowed to delete the task
 		if (!$this->User->isAdmin && $objTask->createdBy != $this->User->id)
 		{
-			$this->log('Not enough permissions to delete task ID "' . $this->Input->get('id') . '"', 'ModuleTask deleteTask()', TL_ERROR);
+			$this->log('Not enough permissions to delete task ID "' . \Input::get('id') . '"', 'ModuleTask deleteTask()', TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
 		}
 
@@ -468,7 +455,7 @@ class ModuleTasks extends \BackendModule
 
 		// Get status records
 		$objStatus = $this->Database->prepare("SELECT * FROM tl_task_status WHERE pid=? ORDER BY tstamp")
-									->execute($this->Input->get('id'));
+									->execute(\Input::get('id'));
 
 		while ($objStatus->next())
 		{
@@ -477,15 +464,15 @@ class ModuleTasks extends \BackendModule
 		}
 
 		$objUndoStmt = $this->Database->prepare("INSERT INTO tl_undo (pid, tstamp, fromTable, query, affectedRows, data) VALUES (?, ?, ?, ?, ?, ?)")
-									  ->execute($this->User->id, time(), 'tl_task', 'DELETE FROM tl_task WHERE id= ' . $this->Input->get('id'), $affected, serialize($data));
+									  ->execute($this->User->id, time(), 'tl_task', 'DELETE FROM tl_task WHERE id= ' . \Input::get('id'), $affected, serialize($data));
 
 		// Delete data and add a log entry
 		if ($objUndoStmt->affectedRows)
 		{
-			$this->Database->prepare("DELETE FROM tl_task WHERE id=?")->execute($this->Input->get('id'));
-			$this->Database->prepare("DELETE FROM tl_task_status WHERE pid=?")->execute($this->Input->get('id'));
+			$this->Database->prepare("DELETE FROM tl_task WHERE id=?")->execute(\Input::get('id'));
+			$this->Database->prepare("DELETE FROM tl_task_status WHERE pid=?")->execute(\Input::get('id'));
 
-			$this->log('DELETE FROM tl_task WHERE id=' . $this->Input->get('id'), 'ModuleTask deleteTask()', TL_GENERAL);
+			$this->log('DELETE FROM tl_task WHERE id=' . \Input::get('id'), 'ModuleTask deleteTask()', TL_GENERAL);
 		}
 
 		// Go back
@@ -514,29 +501,29 @@ class ModuleTasks extends \BackendModule
 		}
 
 		// Set filter
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_filters')
+		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
 		{
 			// Search
 			$session['search']['tl_task']['value'] = '';
-			$session['search']['tl_task']['field'] = $this->Input->post('tl_field', true);
+			$session['search']['tl_task']['field'] = \Input::post('tl_field', true);
 
 			// Make sure the regular expression is valid
-			if ($this->Input->postRaw('tl_value') != '')
+			if (\Input::postRaw('tl_value') != '')
 			{
 				try
 				{
-					$this->Database->prepare("SELECT * FROM tl_task t LEFT JOIN tl_task_status s ON t.id=s.pid AND s.tstamp=(SELECT MAX(tstamp) FROM tl_task_status ts WHERE ts.pid=t.id) WHERE " . $this->Input->post('tl_field', true) . " REGEXP ?")
+					$this->Database->prepare("SELECT * FROM tl_task t LEFT JOIN tl_task_status s ON t.id=s.pid AND s.tstamp=(SELECT MAX(tstamp) FROM tl_task_status ts WHERE ts.pid=t.id) WHERE " . \Input::post('tl_field', true) . " REGEXP ?")
 								   ->limit(1)
-								   ->execute($this->Input->postRaw('tl_value'));
+								   ->execute(\Input::postRaw('tl_value'));
 
-					$session['search']['tl_task']['value'] = $this->Input->postRaw('tl_value');
+					$session['search']['tl_task']['value'] = \Input::postRaw('tl_value');
 				}
 				catch (\Exception $e) {}
 			}
 
 			// Filter
-			$session['filter']['tl_task']['assignedTo'] = $this->Input->post('assignedTo');
-			$session['filter']['tl_task']['deadline'] = $this->Input->post('deadline');
+			$session['filter']['tl_task']['assignedTo'] = \Input::post('assignedTo');
+			$session['filter']['tl_task']['deadline'] = \Input::post('deadline');
 
 			$this->Session->setData($session);
 			$this->reload();
@@ -648,7 +635,7 @@ class ModuleTasks extends \BackendModule
 		}
 
 		// Valiate input
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks')
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks')
 		{
 			$widget->validate();
 
@@ -709,7 +696,7 @@ class ModuleTasks extends \BackendModule
 		$widget->options = $arrOptions;
 
 		// Valiate input
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks')
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks')
 		{
 			$widget->validate();
 
@@ -746,7 +733,7 @@ class ModuleTasks extends \BackendModule
 		}
 
 		// Valiate input
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks')
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks')
 		{
 			$widget->validate();
 
@@ -796,7 +783,7 @@ class ModuleTasks extends \BackendModule
 		$widget->options = $arrOptions;
 
 		// Valiate input
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks')
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks')
 		{
 			$widget->validate();
 
@@ -843,7 +830,7 @@ class ModuleTasks extends \BackendModule
 		$widget->options = $arrOptions;
 
 		// Valiate input
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks')
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks')
 		{
 			$widget->validate();
 
@@ -881,7 +868,7 @@ class ModuleTasks extends \BackendModule
 		}
 
 		// Valiate input
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_tasks')
+		if (\Input::post('FORM_SUBMIT') == 'tl_tasks')
 		{
 			$widget->validate();
 
