@@ -3,6 +3,7 @@
 /**
  * Load tl_task_status language file
  */
+$this->loadLanguageFile('tl_task');
 $this->loadLanguageFile('tl_task_status');
 
 /**
@@ -25,7 +26,7 @@ $GLOBALS['TL_DCA']['tl_task_status'] = array
 				'id' => 'primary',
 				'pid' => 'index',
 			)
-		)
+		),
 	),
 
 	'list' => array
@@ -33,7 +34,7 @@ $GLOBALS['TL_DCA']['tl_task_status'] = array
 		'sorting' => array
 		(
 			'mode'                    => 4,
-			'fields'                  => array('tstamp'),
+			'fields'                  => array('createdAt'),
 			'flag'                    => 8,
 			'headerFields'            => array('title', 'createdBy', 'description'),
 			'child_record_callback'	  => array('tl_task_status', 'listTaskStatusUpdates'),
@@ -87,11 +88,17 @@ $GLOBALS['TL_DCA']['tl_task_status'] = array
 		),
 		'createdBy' => array
 		(
-		 	'label'                   => &$GLOBALS['TL_LANG']['tl_news']['author'],
+		 	'label'                   => &$GLOBALS['TL_LANG']['tl_task']['createdBy'],
 			'default'                 => $this->User->id,
 			'eval'                    => array('doNotCopy'=>true),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
+		),
+		'createdAt' => array
+		(
+			'default'                 => time(),
+			'eval'                    => array('doNotCopy'=>true),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'assignedTo' => array
 		(
@@ -99,7 +106,7 @@ $GLOBALS['TL_DCA']['tl_task_status'] = array
 		 	'foreignKey'              => 'tl_user.name',
 			'eval'                    => array('doNotCopy'=>true, 'chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
 			'relation'                => array('type'=>'hasOne', 'load'=>'eager'),
-            'sql' 					  => "int(10) unsigned NOT NULL default '0'",
+            'sql' 					  => "int(10) unsigned NULL",
         ),
 		'status' => array
 		(
@@ -111,11 +118,11 @@ $GLOBALS['TL_DCA']['tl_task_status'] = array
 		(
 		 	'inputType'               => 'text',
 		 	'eval'                    => array('doNotCopy'=>true, 'tl_class'=>'long'),
-			'sql' 					  => "smallint(5) unsigned NOT NULL default '0'",
+			'sql' 					  => "smallint(5) unsigned NULL",
 		),
 		'comment' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_tasks']['headline'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_task']['comment'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'sorting'                 => true,
@@ -163,8 +170,38 @@ class tl_task_status extends Backend
 	 */
 	public function showTask($arrHeaderFields, Datacontainer $dc)
 	{
-		// return '<div class="tl_header_table">Foobar</div>';
-		// TODO: DC_Table change :-)
+		$arrHeaderFields['title'] = '<strong>'.$arrHeaderFields['title'].'</strong>';
+
+		$intCurrentId = (int) $dc->id;
+
+		// Add assigned user
+		$objResult = $this->Database->prepare("SELECT `assignedTo`, `tstamp` FROM `tl_task_status` WHERE pid=? AND `assignedTo` > 0 ORDER BY `createdAt` DESC")
+									 ->limit(1)
+									 ->execute($intCurrentId);
+
+		$arrHeaderFields['assignedTo'] = $GLOBALS['TL_LANG']['tl_task']['notAssigned'];
+
+		while ($objResult->next())
+		{
+			if($intUserId = $objResult->assignedTo)
+			{
+				$user = UserModel::findOneById($intUserId);
+				$arrHeaderFields['assignedTo'] = $user->name;
+			}			
+		}
+
+		// Add progress
+		$objResult = $this->Database->prepare("SELECT `progress` FROM `tl_task_status` WHERE pid=? AND `progress` > 0 ORDER BY `createdAt` DESC")
+									 ->limit(1)
+									 ->execute($intCurrentId);
+
+		$arrHeaderFields['progress'] = '0 %';
+
+		while ($objResult->next())
+		{
+			$arrHeaderFields['progress'] = $objResult->progress.' %';			
+		}
+
 		return $arrHeaderFields;
 	}
 

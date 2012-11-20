@@ -47,6 +47,7 @@ $GLOBALS['TL_LANG']['tl_task']['date']       = 'Datum';
 $GLOBALS['TL_LANG']['tl_task']['assignedTo'] = array('Bearbeiter');
 $GLOBALS['TL_LANG']['tl_task']['creator']    = 'Ersteller';
 $GLOBALS['TL_LANG']['tl_task']['noTasks']    = 'Momentan sind keine Aufgaben vorhanden.';
+$GLOBALS['TL_LANG']['tl_task']['notAssigned']    = 'Diese Aufgabe ist keinem Benutzer zugewiesen.';
 $GLOBALS['TL_LANG']['tl_task']['delConfirm'] = 'Soll die Aufgabe ID %s wirklich gelöscht werden?';
 $GLOBALS['TL_LANG']['tl_task']['message']    = "\n\n---\n\nDiese Aufgabe wurde Ihnen von %s übertragen.\n%s\n";
 $GLOBALS['TL_LANG']['tl_task']['history']    = 'Bearbeitungshistorie';
