@@ -33,7 +33,7 @@
  */
 $GLOBALS['BE_MOD']['system']['tasks'] = array
 (
-	'callback' => 'ModuleTasks',
+	'tables' => array('tl_tasks', 'tl_task_status'),
 	'icon'     => 'system/modules/tasks/html/icon.gif',
 	'stylesheet' => 'system/modules/tasks/html/style.css'
 );
@@ -42,4 +42,4 @@ $GLOBALS['BE_MOD']['system']['tasks'] = array
 /**
  * System messages
  */
-$GLOBALS['TL_HOOKS']['getSystemMessages'][] = array('TaskMessages', 'listTasks');
+// $GLOBALS['TL_HOOKS']['getSystemMessages'][] = array('TaskMessages', 'listTasks');

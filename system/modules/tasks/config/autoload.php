@@ -33,8 +33,8 @@
  */
 ClassLoader::addClasses(array
 (
-	'Contao\\ModuleTasks'  => 'system/modules/tasks/ModuleTasks.php',
-	'Contao\\TaskMessages' => 'system/modules/tasks/TaskMessages.php',
+	// 'Contao\\ModuleTasks'  => 'system/modules/tasks/ModuleTasks.php',
+	// 'Contao\\TaskMessages' => 'system/modules/tasks/TaskMessages.php',
 ));
 
 
@@ -43,7 +43,7 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'be_task_create' => 'system/modules/tasks/templates',
-	'be_task_edit'   => 'system/modules/tasks/templates',
-	'be_tasks'       => 'system/modules/tasks/templates',
+	// 'be_task_create' => 'system/modules/tasks/templates',
+	// 'be_task_edit'   => 'system/modules/tasks/templates',
+	// 'be_tasks'       => 'system/modules/tasks/templates',
 ));

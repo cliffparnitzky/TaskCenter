@@ -38,14 +38,13 @@ $GLOBALS['TL_LANG']['tl_task']['notify']      = array('Benutzer benachrichtigen'
 $GLOBALS['TL_LANG']['tl_task']['status']      = array('Status', 'Hier können Sie den Bearbeitungsstatus auswählen.');
 $GLOBALS['TL_LANG']['tl_task']['progress']    = array('Stand', 'Hier können Sie den Bearbeitungsstand in Prozent festlegen.');
 $GLOBALS['TL_LANG']['tl_task']['comment']     = array('Kommentar', 'Hier können Sie einen Kommentar hinzufügen.');
-
+$GLOBALS['TL_LANG']['tl_task']['createdBy']  = array('Erstellt von', 'Bitte geben Sie den Ersteller der Aufgabe an.');
 
 /**
  * References
  */
 $GLOBALS['TL_LANG']['tl_task']['date']       = 'Datum';
-$GLOBALS['TL_LANG']['tl_task']['assignedTo'] = 'Bearbeiter';
-$GLOBALS['TL_LANG']['tl_task']['createdBy']  = 'erstellt von %s';
+$GLOBALS['TL_LANG']['tl_task']['assignedTo'] = array('Bearbeiter');
 $GLOBALS['TL_LANG']['tl_task']['creator']    = 'Ersteller';
 $GLOBALS['TL_LANG']['tl_task']['noTasks']    = 'Momentan sind keine Aufgaben vorhanden.';
 $GLOBALS['TL_LANG']['tl_task']['delConfirm'] = 'Soll die Aufgabe ID %s wirklich gelöscht werden?';
