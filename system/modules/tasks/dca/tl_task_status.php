@@ -6,7 +6,7 @@
 $this->loadLanguageFile('tl_task_status');
 
 /**
- * Table tl_tasks
+ * Table tl_task_status
  */
 $GLOBALS['TL_DCA']['tl_task_status'] = array
 (
