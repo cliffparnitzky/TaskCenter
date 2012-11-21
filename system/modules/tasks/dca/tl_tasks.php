@@ -197,6 +197,8 @@ class tl_task extends Backend
 	public function editLabel($row, $label, DataContainer $dc, $args)  
     {	
     	$this->import('tl_task_status');
+    	$strAuthor = tl_task_status::getUsernameById($row['createdBy']);
+    	$args[0] = '<strong>'.$args[0].'</strong><br/><span class="tl_gray">'.'Erstellt von '.$strAuthor.'</span>';
     	$args[1] = $this->tl_task_status->getCurrentAssignedUserByTaskId($row['id']);
     	$args[2] = $this->tl_task_status->getCurrentProgressByTaskId($row['id']);
 
