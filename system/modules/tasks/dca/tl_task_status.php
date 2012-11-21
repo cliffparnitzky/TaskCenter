@@ -37,7 +37,7 @@ $GLOBALS['TL_DCA']['tl_task_status'] = array
 			'fields'                  => array('createdAt'),
 			'flag'                    => 8,
 			'headerFields'            => array('title', 'createdBy', 'description'),
-			'child_record_callback'	  => array('tl_task_status', 'listTaskStatusUpdates'),
+			'child_record_callback'	  => array('Tasks\\TaskModel', 'listStatusUpdates'),
 			'child_record_class'      => 'no_padding',
 			'header_callback'		  => array('tl_task_status', 'showTask'),
 		),
@@ -152,58 +152,6 @@ class tl_task_status extends Backend
 	}
 
 	/**
-	 * List all task updates
-	 * @param array
-	 * @return string
-	 */
-	public function listTaskStatusUpdates($arrRow)
-	{
-		$return = ' <span class="tl_gray">' . $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $arrRow['tstamp']).' - '.UserModel::findOneById($arrRow['createdBy'])->name.'</span>';
-		$return .= '<div class="comment">'.$arrRow['comment'].'</div>';
-
-		unset($arrRow['comment']);
-		unset($arrRow['id']);
-		unset($arrRow['pid']);
-		unset($arrRow['tstamp']);
-		unset($arrRow['createdAt']);
-		unset($arrRow['createdBy']);
-
-		$return .= '<ul class="updated">';
-		foreach($arrRow as $k=>$v)
-		{
-			if($v < 1)
-			{
-				// not false so something has changed
-				continue;
-			}
-
-			if($k === 'assignedTo')
-			{
-				$v = UserModel::findOneById($v)->name;
-			}
-
-			if($k === 'progress')
-			{
-				$v = $v.'%';
-			}
-
-			if(is_string($GLOBALS['TL_LANG']['tl_task'][$k]))
-			{
-				$k = $GLOBALS['TL_LANG']['tl_task'][$k];
-			}
-			elseif(is_array($GLOBALS['TL_LANG']['tl_task'][$k]))
-			{
-				$k = $GLOBALS['TL_LANG']['tl_task'][$k][0];
-			}
-
-			$return .= '<li>'.$k.': '.$v.'</li>';
-		}
-		$return .= '</ul>';
-
-		return $return;
-	}
-
-	/**
 	 * Show the task data in the header of the status listing
 	 * @param  Array        $arrHeaderFields the headerfields given from list->sorting
 	 * @param  Datacontainer $dc              a Datacontainer Object
@@ -212,50 +160,15 @@ class tl_task_status extends Backend
 	public function showTask($arrHeaderFields, Datacontainer $dc)
 	{
 		$arrHeaderFields['title'] = '<strong>'.$arrHeaderFields['title'].'</strong>';
-
-		$intCurrentId = (int) $dc->id;
+		$taskId = (int) $dc->id;
 
 		// Add assigned user
-		$arrHeaderFields['assignedTo'] = ($this->getCurrentAssignedUserByTaskId($intCurrentId)) ?: $GLOBALS['TL_LANG']['tl_task']['notAssigned'];
+		$arrHeaderFields['assignedTo'] = (TaskModel::getCurrentAssignedUserByTaskId($taskId)) ?: $GLOBALS['TL_LANG']['tl_task']['notAssigned'];
 
 		// Add progress
-		$arrHeaderFields['progress'] = $this->getCurrentProgressByTaskId($intCurrentId);
+		$arrHeaderFields['progress'] = TaskModel::getCurrentProgressByTaskId($taskId).'%';
 
 		return $arrHeaderFields;
-	}
-
-	public function getCurrentAssignedUserByTaskId($id)
-	{
-		$objResult = $this->Database->prepare("SELECT `assignedTo`, `tstamp` FROM `tl_task_status` WHERE pid=? AND `assignedTo` > 0 ORDER BY `createdAt` DESC")
-									 ->limit(1)
-									 ->execute($id);
-
-		$return = null;
-
-		while ($objResult->next())
-		{
-			if($intUserId = $objResult->assignedTo)
-			{
-				$return = UserModel::findOneById($intUserId)->name;
-			}			
-		}
-
-		return $return;
-	}	
-
-	public function getCurrentProgressByTaskId($id)
-	{
-		$objResult = $this->Database->prepare("SELECT `progress` FROM `tl_task_status` WHERE pid=? AND `progress` IS NOT NULL ORDER BY `createdAt` DESC")
-									 ->limit(1)
-									 ->execute($id);
-		$return = '0%';
-
-		while ($objResult->next())
-		{
-			$return = $objResult->progress.'%';			
-		}
-
-		return $return;
 	}
 
 }
