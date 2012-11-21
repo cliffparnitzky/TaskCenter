@@ -26,3 +26,21 @@
  * @package    Tasks
  * @license    LGPL
  */
+
+/**
+ * Register the namespaces
+ */
+ClassLoader::addNamespaces(array
+(
+	'Tasks',
+));
+
+
+/**
+ * Register the classes
+ */
+ClassLoader::addClasses(array
+(
+	// Models
+	'Tasks\TaskModel'              => 'system/modules/tasks/models/TaskModel.php',
+));

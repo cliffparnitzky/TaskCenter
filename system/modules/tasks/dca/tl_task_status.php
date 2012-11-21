@@ -158,7 +158,7 @@ class tl_task_status extends Backend
 	 */
 	public function listTaskStatusUpdates($arrRow)
 	{
-		$return = ' <span class="tl_gray">' . $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $arrRow['tstamp']).' - '.static::getUsernameById($arrRow['createdBy']).'</span>';
+		$return = ' <span class="tl_gray">' . $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $arrRow['tstamp']).' - '.UserModel::findOneById($arrRow['createdBy'])->name.'</span>';
 		$return .= '<div class="comment">'.$arrRow['comment'].'</div>';
 
 		unset($arrRow['comment']);
@@ -179,7 +179,7 @@ class tl_task_status extends Backend
 
 			if($k === 'assignedTo')
 			{
-				$v = static::getUsernameById($v);
+				$v = UserModel::findOneById($v)->name;
 			}
 
 			if($k === 'progress')
@@ -224,12 +224,6 @@ class tl_task_status extends Backend
 		return $arrHeaderFields;
 	}
 
-	public static function getUsernameById($id)
-	{
-		$user = UserModel::findOneById($id);
-		return $user->name;
-	}
-
 	public function getCurrentAssignedUserByTaskId($id)
 	{
 		$objResult = $this->Database->prepare("SELECT `assignedTo`, `tstamp` FROM `tl_task_status` WHERE pid=? AND `assignedTo` > 0 ORDER BY `createdAt` DESC")
@@ -242,7 +236,7 @@ class tl_task_status extends Backend
 		{
 			if($intUserId = $objResult->assignedTo)
 			{
-				$return = static::getUsernameById($intUserId);
+				$return = UserModel::findOneById($intUserId)->name;
 			}			
 		}
 
