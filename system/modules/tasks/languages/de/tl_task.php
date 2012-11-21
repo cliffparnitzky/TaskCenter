@@ -45,6 +45,7 @@ $GLOBALS['TL_LANG']['tl_task']['createdBy']  = array('Erstellt von', 'Bitte gebe
  */
 $GLOBALS['TL_LANG']['tl_task']['date']       = 'Datum';
 $GLOBALS['TL_LANG']['tl_task']['assignedTo'] = array('Bearbeiter');
+$GLOBALS['TL_LANG']['tl_task']['progress'] = array('Stand');
 $GLOBALS['TL_LANG']['tl_task']['creator']    = 'Ersteller';
 $GLOBALS['TL_LANG']['tl_task']['noTasks']    = 'Momentan sind keine Aufgaben vorhanden.';
 $GLOBALS['TL_LANG']['tl_task']['notAssigned']    = 'Diese Aufgabe ist keinem Benutzer zugewiesen.';

@@ -103,6 +103,7 @@ $GLOBALS['TL_DCA']['tl_task_status'] = array
 		'assignedTo' => array
 		(
 		 	'inputType'               => 'select',
+		 	'default'				  => null,
 		 	'foreignKey'              => 'tl_user.name',
 			'eval'                    => array('doNotCopy'=>true, 'chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
 			'relation'                => array('type'=>'hasOne', 'load'=>'eager'),
@@ -170,7 +171,7 @@ class tl_task_status extends Backend
 		$return .= '<ul class="updated">';
 		foreach($arrRow as $k=>$v)
 		{
-			if($v === null)
+			if($v < 1)
 			{
 				// not false so something has changed
 				continue;
@@ -179,6 +180,11 @@ class tl_task_status extends Backend
 			if($k === 'assignedTo')
 			{
 				$v = static::getUsernameById($v);
+			}
+
+			if($k === 'progress')
+			{
+				$v = $v.'%';
 			}
 
 			$return .= '<li>'.$k.': '.$v.'</li>';
@@ -201,31 +207,10 @@ class tl_task_status extends Backend
 		$intCurrentId = (int) $dc->id;
 
 		// Add assigned user
-		$objResult = $this->Database->prepare("SELECT `assignedTo`, `tstamp` FROM `tl_task_status` WHERE pid=? AND `assignedTo` IS NOT NULL ORDER BY `createdAt` DESC")
-									 ->limit(1)
-									 ->execute($intCurrentId);
-
-		$arrHeaderFields['assignedTo'] = $GLOBALS['TL_LANG']['tl_task']['notAssigned'];
-
-		while ($objResult->next())
-		{
-			if($intUserId = $objResult->assignedTo)
-			{
-				$arrHeaderFields['assignedTo'] = static::getUsernameById($intUserId);
-			}			
-		}
+		$arrHeaderFields['assignedTo'] = ($this->getCurrentAssignedUserByTaskId($intCurrentId)) ?: $GLOBALS['TL_LANG']['tl_task']['notAssigned'];
 
 		// Add progress
-		$objResult = $this->Database->prepare("SELECT `progress` FROM `tl_task_status` WHERE pid=? AND `progress` IS NOT NULL ORDER BY `createdAt` DESC")
-									 ->limit(1)
-									 ->execute($intCurrentId);
-
-		$arrHeaderFields['progress'] = '0 %';
-
-		while ($objResult->next())
-		{
-			$arrHeaderFields['progress'] = $objResult->progress.' %';			
-		}
+		$arrHeaderFields['progress'] = $this->getCurrentProgressByTaskId($intCurrentId);
 
 		return $arrHeaderFields;
 	}
@@ -234,6 +219,40 @@ class tl_task_status extends Backend
 	{
 		$user = UserModel::findOneById($id);
 		return $user->name;
+	}
+
+	public function getCurrentAssignedUserByTaskId($id)
+	{
+		$objResult = $this->Database->prepare("SELECT `assignedTo`, `tstamp` FROM `tl_task_status` WHERE pid=? AND `assignedTo` > 0 ORDER BY `createdAt` DESC")
+									 ->limit(1)
+									 ->execute($id);
+
+		$return = null;
+
+		while ($objResult->next())
+		{
+			if($intUserId = $objResult->assignedTo)
+			{
+				$return = static::getUsernameById($intUserId);
+			}			
+		}
+
+		return $return;
+	}	
+
+	public function getCurrentProgressByTaskId($id)
+	{
+		$objResult = $this->Database->prepare("SELECT `progress` FROM `tl_task_status` WHERE pid=? AND `progress` IS NOT NULL ORDER BY `createdAt` DESC")
+									 ->limit(1)
+									 ->execute($id);
+		$return = '0%';
+
+		while ($objResult->next())
+		{
+			$return = $objResult->progress.'%';			
+		}
+
+		return $return;
 	}
 
 }

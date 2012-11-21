@@ -38,8 +38,9 @@ $GLOBALS['TL_DCA']['tl_tasks'] = array
 		),
 		'label' => array
 		(
-			'fields'                  => array('title', 'deadline'),
+			'fields'                  => array('title' , 'assignedTo', 'progress', 'createdAt', 'deadline'),
 			'showColumns'             => true,
+			'label_callback'          => array('tl_task', 'editLabel')
 		),
 		'operations' => array
 		(
@@ -99,6 +100,20 @@ $GLOBALS['TL_DCA']['tl_tasks'] = array
 			'sql'					  => "int(10) unsigned NOT NULL default '0'",
 			'flag'                    => 6,
 		),
+		'assignedTo' => array(
+      		'label' => &$GLOBALS['TL_LANG']['tl_task']['assignedTo'],
+        ),
+        'progress' => array(
+      		'label' =>&$GLOBALS['TL_LANG']['tl_task']['progress'],
+        ),
+        'createdAt' => array
+		(
+		 	'label' 				  => array('Erstellt'),
+			'default'                 => time(),
+			'eval'                    => array('doNotCopy'=>true, 'rgxp'=>'date', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'sql'					  => "int(10) unsigned NOT NULL default '0'",
+			'flag'                    => 6,
+		),
 		'createdBy' => array
 		(
 		 	'label'                   => &$GLOBALS['TL_LANG']['tl_task']['createdBy'],
@@ -142,7 +157,7 @@ class tl_task extends Backend
 	}
 
 	/**
-	 * Return the edit task button
+	 * Return the edit task status
 	 * @param array
 	 * @param string
 	 * @param string
@@ -170,4 +185,21 @@ class tl_task extends Backend
 	{
 		return ($this->User->isAdmin || $this->User->id == $row['createdBy'] || $this->User->hasAccess('modules', 'tasks')) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.$this->generateImage($icon, $label).'</a> ' :  '';
 	}
+
+	/**
+	 * format labels
+	 * @param array
+	 * @param string
+	 * @param \DataContainer
+	 * @param array
+	 * @return string
+	 */
+	public function editLabel($row, $label, DataContainer $dc, $args)  
+    {	
+    	$this->import('tl_task_status');
+    	$args[1] = $this->tl_task_status->getCurrentAssignedUserByTaskId($row['id']);
+    	$args[2] = $this->tl_task_status->getCurrentProgressByTaskId($row['id']);
+
+        return $args;  
+    }  
 }
