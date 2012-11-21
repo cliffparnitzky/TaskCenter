@@ -187,6 +187,15 @@ class tl_task_status extends Backend
 				$v = $v.'%';
 			}
 
+			if(is_string($GLOBALS['TL_LANG']['tl_task'][$k]))
+			{
+				$k = $GLOBALS['TL_LANG']['tl_task'][$k];
+			}
+			elseif(is_array($GLOBALS['TL_LANG']['tl_task'][$k]))
+			{
+				$k = $GLOBALS['TL_LANG']['tl_task'][$k][0];
+			}
+
 			$return .= '<li>'.$k.': '.$v.'</li>';
 		}
 		$return .= '</ul>';
