@@ -41,24 +41,24 @@ $GLOBALS['BE_MOD']['taskcenter']['projects'] = array
 	'tables' => array('tl_task_project'),
 	'icon'     => 'system/modules/TaskCenterExtended/html/icon_projects.png'
 );
-$GLOBALS['BE_MOD']['taskcenter']['workflows'] = array
-(
-	'tables' => array('tl_task_workflow','tl_task_workflow_transitions'),
-	'icon'     => 'system/modules/TaskCenterExtended/html/icon_workflow.png'
-);
+// $GLOBALS['BE_MOD']['taskcenter']['workflows'] = array
+// (
+// 	'tables' => array('tl_task_workflow','tl_task_workflow_transitions'),
+// 	'icon'     => 'system/modules/TaskCenterExtended/html/icon_workflow.png'
+// );
 
 /**
  * Front end modules
  */
-$GLOBALS['FE_MOD']['taskcenter']= array
-(
-	'task_creation' => 'ModuleTasksCreate',
-	'task_listing'  => 'ModuleTasksList'
-) ;
+// $GLOBALS['FE_MOD']['taskcenter']= array
+// (
+// 	'task_creation' => 'ModuleTasksCreate',
+// 	'task_listing'  => 'ModuleTasksList'
+// ) ;
 
 /**
  * Daily cron job to send notification mails to assignee, if the deadline of its task will be reached in a special time period (defined from admin in backend)
  */
-$GLOBALS['TL_CRON']['daily'][] = array('TaskCenterMailSender', 'sendDeadlineNotificationMail');
+// $GLOBALS['TL_CRON']['daily'][] = array('TaskCenterMailSender', 'sendDeadlineNotificationMail');
 
 ?>

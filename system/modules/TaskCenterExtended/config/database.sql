@@ -71,20 +71,20 @@ CREATE TABLE `tl_user` (
 -- 
 -- Table `tl_task_workflow`
 -- 
-CREATE TABLE `tl_task_workflow` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `pid` int(10) unsigned NOT NULL default '0',
-  `tstamp` int(10) unsigned NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `shortname` varchar(32) NOT NULL default '',
-  `creators` varchar(128) NOT NULL default '',
-  `description` text NULL,
-  `previewImage` varchar(255) NOT NULL default '',
-  `published` char(1) NOT NULL default '',
-  `start` varchar(10) NOT NULL default '',
-  `stop` varchar(10) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+-- CREATE TABLE `tl_task_workflow` (
+--   `id` int(10) unsigned NOT NULL auto_increment,
+--   `pid` int(10) unsigned NOT NULL default '0',
+--   `tstamp` int(10) unsigned NOT NULL default '0',
+--   `name` varchar(255) NOT NULL default '',
+--   `shortname` varchar(32) NOT NULL default '',
+--   `creators` varchar(128) NOT NULL default '',
+--   `description` text NULL,
+--   `previewImage` varchar(255) NOT NULL default '',
+--   `published` char(1) NOT NULL default '',
+--   `start` varchar(10) NOT NULL default '',
+--   `stop` varchar(10) NOT NULL default '',
+--   PRIMARY KEY  (`id`)
+-- ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 -- --------------------------------------------------------
@@ -92,10 +92,10 @@ CREATE TABLE `tl_task_workflow` (
 -- 
 -- Table `tl_task_workflow_steps`
 -- 
-CREATE TABLE `tl_task_workflow_transitions` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `pid` int(10) unsigned NOT NULL default '0',
-  `tstamp` int(10) unsigned NOT NULL default '0',
-  `tasktype` varchar(32) NOT NULL default 'exercise',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+-- CREATE TABLE `tl_task_workflow_transitions` (
+--   `id` int(10) unsigned NOT NULL auto_increment,
+--   `pid` int(10) unsigned NOT NULL default '0',
+--   `tstamp` int(10) unsigned NOT NULL default '0',
+--   `tasktype` varchar(32) NOT NULL default 'exercise',
+--   PRIMARY KEY  (`id`)
+-- ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
