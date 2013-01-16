@@ -35,7 +35,7 @@ Dependency
 Screenshot
 ----------
 
-![Screenshot](https://raw.github.com/cliffparnitzky/TinyMceAdvancedList/master/screenshot.jpg)
+![Screenshot](https://raw.github.com/cliffparnitzky/TaskCenter/ContaoV2TaskCenterExtended/screenshot.jpg)
 
 
 Features
