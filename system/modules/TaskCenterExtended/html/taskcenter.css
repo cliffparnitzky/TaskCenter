@@ -1,0 +1,65 @@
+.tl_specialFilter strong
+{
+	display: inline-block;
+	padding: 3px;
+}
+
+.specialCheckboxFilter span.label
+{
+	float: left;
+	padding: 1px;
+}
+
+.specialCheckboxFilter div
+{
+	float: right;
+	margin-left: 2px;
+	width: auto !important;
+
+}
+
+.specialCheckboxFilter div input
+{
+	float: left;
+}
+
+.specialCheckboxFilter div label
+{
+	display: none;
+}
+
+.tl_specialFilter:hover div
+{
+	padding-right: 5px;
+}
+
+.tl_specialFilter:hover input
+{
+	float: left;
+	clear: left;
+}
+
+.tl_specialFilter:hover label
+{
+	float: left;
+	display: inline;
+	padding-left: 3px;
+}
+
+td.icon
+{
+	text-align: center;
+}
+
+table#taskcenter tr:hover td
+{
+	background-color: #EBFDD7;
+}
+
+.col_last
+{
+	text-align: right;
+	width: 50px;
+	min-width: 50px;
+	max-width: 50px;
+}
