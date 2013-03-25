@@ -1,4 +1,4 @@
-Contao Task Center Extension
+Contao Extension: TaskCenter
 ============================
 
 This is the "Task Center" extension for Contao Open Source CMS, which was
@@ -25,7 +25,7 @@ Compatibility
 -------------
 
 - min. version: Contao 3.0.0
-- max. version: Contao 3.0.0
+- max. version: Contao 3.0.x
 
 
 Dependency
