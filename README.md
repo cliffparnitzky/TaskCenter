@@ -111,8 +111,6 @@ Features
 Planung
 -------
 
-- Anpassung an Contao 2.10.0
-  - Hinweise: http://www.contao.org/neuigkeiten/items/contao_2-10-RC1.html
 - Erweiterung um Job, der täglich 1 x prüft, für welche Tasks die Dealine erreicht ist und dann eine Email an den Bearbeiter schickt
 	- Ausführung: täglich per CRON Job
 	- Inhalt für HTML und Text Mail in DCA Konfiguriert
