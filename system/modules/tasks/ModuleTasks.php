@@ -321,11 +321,12 @@ class ModuleTasks extends \BackendModule
 		}
 
 		// Check if the user is allowed to edit the task
-		if (!$this->User->isAdmin && $objTask->createdBy != $this->User->id)
+		// TODO: check what we can do here
+		/*if (!$this->User->isAdmin && $objTask->createdBy != $this->User->id)
 		{
 			$this->log('Not enough permissions to edit task ID "' . \Input::get('id') . '"', 'ModuleTask editTask()', TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
-		}
+		}*/
 
 		// Advanced options
 		$this->blnAdvanced = ($this->User->isAdmin || $objTask->createdBy == $this->User->id);
