@@ -72,16 +72,6 @@ class ModuleTasks extends \BackendModule
 		$this->import('BackendUser', 'User');
 		$this->loadLanguageFile('tl_task');
 
-		// Check the request token (see #4007)
-		if (isset($_GET['act']))
-		{
-			if (!isset($_GET['rt']) || !\RequestToken::validate(\Input::get('rt')))
-			{
-				$this->Session->set('INVALID_TOKEN_URL', $this->Environment->request);
-				$this->redirect('contao/confirm.php');
-			}
-		}
-
 		// Dispatch
 		switch (\Input::get('act'))
 		{
@@ -94,6 +84,15 @@ class ModuleTasks extends \BackendModule
 				break;
 
 			case 'delete':
+				// Check the request token (see #4007) ... to avoid deleting from outside the backend
+				if (isset($_GET['act']))
+				{
+					if (!isset($_GET['rt']) || !\RequestToken::validate(\Input::get('rt')))
+					{
+						$this->Session->set('INVALID_TOKEN_URL', $this->Environment->request);
+						$this->redirect('contao/confirm.php');
+					}
+				}
 				$this->deleteTask();
 				break;
 
