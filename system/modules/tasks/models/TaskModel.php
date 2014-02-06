@@ -1,118 +1,125 @@
 <?php
 
 /**
+ * Contao Open Source CMS
+ *
+ * @copyright  Leo Feyer 2005-2012
+ * @copyright  Cliff Parnitzky 2013
+ * @package    Tasks
+ * @license    LGPL
+ */
+
+/**
  * Run in a custom namespace, so the class can be replaced
  */
 namespace Tasks;
 
 use \Contao\UserModel;
 
-
 /**
  * Reads and writes tasks
  */
 class TaskModel extends \Model
 {
-
 	/**
 	 * Table name
 	 * @var string
 	 */
-	protected static $strTable = 'tl_tasks';
-
-	/**
-	 * List all task updates
-	 * @param array
-	 * @return string
-	 */
-	public function listStatusUpdates($arrRow)
+	protected static $strTable = 'tl_task';
+	
+	public function getCurrentTaskStatus($ignoredTaskStatusId = null)
 	{
-		$return = ' <span class="tl_gray">' . $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $arrRow['tstamp']).' - '.UserModel::findOneById($arrRow['createdBy'])->name.'</span>';
-		$return .= '<div class="comment">'.$arrRow['comment'].'</div>';
-
-		unset($arrRow['comment']);
-		unset($arrRow['id']);
-		unset($arrRow['pid']);
-		unset($arrRow['tstamp']);
-		unset($arrRow['createdAt']);
-		unset($arrRow['createdBy']);
-
-		$return .= '<ul class="updated">';
-		foreach($arrRow as $k=>$v)
+		$arrParams = array();
+		$arrParams[] = $this->id;
+		
+		$ignoredTaskStatusIdQuery = "";
+		
+		if ($ignoredTaskStatusId != null)
 		{
-			if($v < 1)
-			{
-				// not false so something has changed
-				continue;
-			}
-
-			if($k === 'assignedTo')
-			{
-				$v = UserModel::findOneById($v)->name;
-			}
-
-			if($k === 'progress')
-			{
-				$v = $v.'%';
-			}
-
-			if(is_string($GLOBALS['TL_LANG']['tl_task'][$k]))
-			{
-				$k = $GLOBALS['TL_LANG']['tl_task'][$k];
-			}
-			elseif(is_array($GLOBALS['TL_LANG']['tl_task'][$k]))
-			{
-				$k = $GLOBALS['TL_LANG']['tl_task'][$k][0];
-			}
-
-			$return .= '<li>'.$k.': '.$v.'</li>';
+			$ignoredTaskStatusIdQuery = "AND id != ?";
+			$arrParams[] = $ignoredTaskStatusId;
 		}
-		$return .= '</ul>';
-
-		return $return;
-	}
-
-	public function getCurrentAssignedUser()
-	{
-		$objResult = \Database::getInstance()->prepare("SELECT `assignedTo`, `tstamp` FROM `tl_task_status` WHERE pid=? AND `assignedTo` > 0 ORDER BY `createdAt` DESC")
+		
+		$objResult = \Database::getInstance()->prepare("SELECT * FROM tl_task_status WHERE pid = ? AND tstamp > 0 " . $ignoredTaskStatusIdQuery . " ORDER BY createdAt DESC")
 									 ->limit(1)
-									 ->execute($this->id);
+									 ->execute($arrParams);
 
-		$return = null;
-
-		while ($objResult->next())
+		if ($objResult->numRows == 1)
 		{
-			if($intUserId = $objResult->assignedTo)
+			return $objResult;
+		}
+
+		return null;
+	}
+	
+	/* STATIC functions */
+	
+	public static function getCurrentTaskById($id)
+	{
+		return static::findByPk($id);
+	}
+
+	public static function getCurrentTaskStatusForTask($id)
+	{
+		if ($taskStatus = static::findOneById($id)->getCurrentTaskStatus())
+		{
+			return $taskStatus;
+		}
+		return null;
+	}
+
+	public static function getLastActiveTaskStatusForTask($id, $ignoredTaskStatusId)
+	{
+		if ($taskStatus = static::findOneById($id)->getCurrentTaskStatus($ignoredTaskStatusId))
+		{
+			return $taskStatus;
+		}
+		else if ($taskStatus = static::findOneById($id)->getCurrentTaskStatus())
+		{
+			return $taskStatus;
+		}
+		return null;
+	}
+
+	public static function getCurrentStatusForTask($id)
+	{
+		if ($taskStatus = static::findOneById($id)->getCurrentTaskStatus())
+		{
+			return $taskStatus->status;
+		}
+		return null;
+	}
+
+	public static function getCurrentProgressForTask($id)
+	{
+		if ($taskStatus = static::findOneById($id)->getCurrentTaskStatus())
+		{
+			return $taskStatus->progress;
+		}
+		return null;
+	}
+
+	public static function getCurrentAssignedUserForTask($id)
+	{
+		if ($taskStatus = static::findOneById($id)->getCurrentTaskStatus())
+		{
+			return UserModel::findOneById($taskStatus->assignedTo);
+		}
+		return null;
+	}
+	
+	public static function getDefaultValue($valueType)
+	{
+		$value = $GLOBALS['TL_TASK_DEFAULT'][$valueType];
+		
+		if (isset($GLOBALS['TL_HOOKS']['tasksModifyDefaultValue']) && is_array($GLOBALS['TL_HOOKS']['tasksModifyDefaultValue']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['tasksModifyDefaultValue'] as $callback)
 			{
-				$return = UserModel::findOneById($intUserId)->name;
-			}			
+				$value = \System::importStatic($callback[0])->$callback[1]($value, $valueType);
+			}
 		}
-
-		return $return;
-	}
-
-	public static function getCurrentAssignedUserByTaskId($id)
-	{
-		return static::findOneById($id)->getCurrentAssignedUser();
-	}
-
-	public function getCurrentProgress()
-	{
-		$objResult = \Database::getInstance()->prepare("SELECT `progress` FROM `tl_task_status` WHERE pid=? AND `progress` IS NOT NULL ORDER BY `createdAt` DESC")
-									 ->limit(1)
-									 ->execute($this->id);
-		$return = '0';
-
-		while ($objResult->next())
-		{
-			$return = $objResult->progress;			
-		}
-
-		return $return;
-	}
-
-	public static function getCurrentProgressByTaskId($id)
-	{
-		return static::findOneById($id)->getCurrentProgress();
+		
+		return $value;
 	}
 }

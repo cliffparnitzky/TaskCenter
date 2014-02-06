@@ -2,44 +2,57 @@
 
 /**
  * Contao Open Source CMS
- * Copyright (C) 2005-2012 Leo Feyer
  *
- * Formerly known as TYPOlight Open Source CMS.
- *
- * This program is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program. If not, please visit the Free
- * Software Foundation website at <http://www.gnu.org/licenses/>.
- *
- * PHP version 5.3
  * @copyright  Leo Feyer 2005-2012
- * @author     Leo Feyer <http://www.contao.org>
- * @package    TaskCenter
+ * @copyright  Cliff Parnitzky 2013
+ * @package    Tasks
  * @license    LGPL
  */
-
 
 /**
  * Back end modules
  */
-$GLOBALS['BE_MOD']['system']['tasks'] = array
+$GLOBALS['BE_MOD']['taskcenter']['task'] = array
 (
-	'tables' => array('tl_tasks', 'tl_task_status'),
-	'icon'     => 'system/modules/tasks/html/icon.gif',
-	'stylesheet' => 'system/modules/tasks/html/style.css'
+	'tables'     => array('tl_task', 'tl_task_status'),
+	'icon'       => 'system/modules/tasks/html/icon_task.png',
+	'stylesheet' => 'system/modules/tasks/html/style.css' 
 );
-
 
 /**
  * System messages
  */
 // $GLOBALS['TL_HOOKS']['getSystemMessages'][] = array('TaskMessages', 'listTasks');
+
+/**
+ * Register hooks
+ */
+$GLOBALS['TL_HOOKS']['tasksModifyStatusOptions'][]          = array('TaskHooks', 'checkStatusOptions');
+$GLOBALS['TL_HOOKS']['tasksModifyProgressOptions'][]        = array('TaskHooks', 'checkProgressOptions');
+$GLOBALS['TL_HOOKS']['tasksModifyTasktypeOptions'][]        = array('TaskHooks', 'checkTasktypeOptions');
+$GLOBALS['TL_HOOKS']['tasksModifyPriorityOptions'][]        = array('TaskHooks', 'checkPriorityOptions');
+$GLOBALS['TL_HOOKS']['tasksModifyTaskTableRow'][]           = array('TaskHooks', 'formatTaskTableRow');
+$GLOBALS['TL_HOOKS']['tasksModifyTaskTableRow'][]           = array('TaskHooks', 'formatTaskTableRowDeadlineExceeded');
+$GLOBALS['TL_HOOKS']['tasksModifyTaskStatusTableRows'][]    = array('TaskHooks', 'cleanTaskStatusTableRows');
+$GLOBALS['TL_HOOKS']['tasksModifyTaskStatusTableRows'][]    = array('TaskHooks', 'formatTaskStatusTableRows');
+$GLOBALS['TL_HOOKS']['tasksModifyTaskStatusHeaderFields'][] = array('TaskHooks', 'formatTaskStatusHeaderFields');
+$GLOBALS['TL_HOOKS']['tasksModifyDefaultValue'][]           = array('TaskHooks', 'assignLoggedUserToBugs');
+
+/**
+ * Define special filters
+ */
+$GLOBALS['TL_TASK_SPECIALFILTER']['status_open']          = array('status NOT IN ("declined", "completed", "archived")', 0);
+$GLOBALS['TL_TASK_SPECIALFILTER']['status_closed']        = array('status IN ("declined", "completed", "archived")', 0);
+$GLOBALS['TL_TASK_SPECIALFILTER']['priority_important']   = array('priority > ?', 0);
+$GLOBALS['TL_TASK_SPECIALFILTER']['priority_unimportant'] = array('priority < ?', 0);
+
+/**
+ * Define task defaults
+ */
+$GLOBALS['TL_TASK_DEFAULT']['tasktype']     = 'exercise';
+$GLOBALS['TL_TASK_DEFAULT']['priority']     = 0;
+$GLOBALS['TL_TASK_DEFAULT']['status']       = 'created';
+$GLOBALS['TL_TASK_DEFAULT']['progress']     = 0;
+$GLOBALS['TL_TASK_DEFAULT']['assignedUser'] = 0;
+
+?>
