@@ -1,0 +1,31 @@
+{
+	"name":"cliffparnitzky/task-center",
+	"description":"Provides a task center which allows you to create tasks, assign them to other users and track their progress.",
+	"keywords":["contao","tasks","task center"],
+	"type":"contao-module",
+	"license":"LGPL-3.0+",
+	"authors":[
+		{
+			"name":"Cliff Parnitzky",
+			"email":"contao@cliff-parnitzky.de",
+			"role":"Developer"
+		}
+	],
+	"support":{
+		"email":"contao@cliff-parnitzky.de",
+		"issues":"https://github.com/cliffparnitzky/TaskCenter/issues",
+		"source":"https://github.com/cliffparnitzky/TaskCenter"
+	},
+	"require":{
+		"php":">=5.3",
+		"contao/core":">=3.0.0,<4.0.0-dev",
+		"contao-community-alliance/composer-installer":"*"
+	},
+	"extra":{
+		"contao":{
+			"sources":{
+				"system/modules/tasks":"system/modules/tasks"
+			}
+		}
+	}
+}
