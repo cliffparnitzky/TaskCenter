@@ -23,16 +23,18 @@
   <h3><?php echo $this->deadline->generateLabel(); ?></h3>
   <?php echo $this->deadline->generateWithError(); ?> <img src="assets/mootools/datepicker/<?php echo DATEPICKER; ?>/icon.gif" width="20" height="20" alt="" id="toggle_<?php echo $this->deadline->id; ?>" style="vertical-align:-6px">
   <script>
-  window.addEvent('domready', function() {
-    new Picker.Date($$('#ctrl_<?php echo $this->deadline->name; ?>'), {
-      toggle:$$('#toggle_<?php echo $this->deadline->id; ?>'),
-      format:"<?php echo Date::formatToJs($GLOBALS['TL_CONFIG']['dateFormat']); ?>",
-      positionOffset:{x:-197,y:-182},
-      pickerClass:"datepicker_dashboard",
-      useFadeInOut:!Browser.ie,
-      startDay:<?php echo $GLOBALS['TL_LANG']['MSC']['weekOffset']; ?>
+	window.addEvent("domready", function() {
+      new Picker.Date($("ctrl_<?php echo $this->deadline->id; ?>"), {
+        draggable: false,
+        toggle: $("toggle_<?php echo $this->deadline->id; ?>"),
+        format: "<?php echo \Date::formatToJs(\Config::get('dateFormat')); ?>",
+        positionOffset: {x:-211,y:-209},
+        pickerClass: "datepicker_bootstrap",
+        useFadeInOut: !Browser.ie,
+        startDay: <?php echo $GLOBALS['TL_LANG']['MSC']['weekOffset']; ?>,
+        titleFormat: "<?php echo $GLOBALS['TL_LANG']['MSC']['titleFormat']; ?>"
+      });
     });
-  });
   </script>
 <?php if ($this->deadline->help): ?>
   <p class="tl_help tl_tip"><?php echo $this->deadline->help; ?></p>

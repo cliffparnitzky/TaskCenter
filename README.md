@@ -24,7 +24,7 @@ https://github.com/cliffparnitzky/TaskCenter/issues
 Compatibility
 -------------
 
-- min. version: Contao 3.0.0
+- min. version: Contao 3.3.0
 - max. version: Contao 3.3.x
 
 
