@@ -9,10 +9,9 @@ them to other users and track their progress.
 Installation
 ------------
 
-The extension can be installed using the Contao extension manager in the Contao
-back end. If you prefer to install it manually, download the files here:
+The extension can be installed using the Contao extension manager in the Contao backend.
 
-http://contao.org/de/extension-list/view/tasks.html
+Or install it via [composer](https://packagist.org/packages/cliffparnitzky/task-center).
 
 
 Tracker

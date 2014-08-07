@@ -21,11 +21,17 @@
 		"contao/core":">=3.3.0,<4.0.0-dev",
 		"contao-community-alliance/composer-installer":"*"
 	},
+	"replace": {
+		"contao-legacy/tasks": "*"
+	},
 	"extra":{
 		"contao":{
 			"sources":{
 				"system/modules/tasks":"system/modules/tasks"
 			}
+		},
+		"branch-alias": {
+			"dev-master": "1.0.x-dev"
 		}
 	}
 }
