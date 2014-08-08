@@ -26,6 +26,9 @@
 			"sources":{
 				"system/modules/tasks":"system/modules/tasks"
 			}
+		},
+		"branch-alias": {
+			"dev-tng": "2.0.x-dev"
 		}
 	}
 }
