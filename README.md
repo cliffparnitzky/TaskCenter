@@ -9,9 +9,7 @@ them to other users and track their progress.
 Installation
 ------------
 
-The extension can be installed using the Contao extension manager in the Contao backend.
-
-Or install it via [composer](https://packagist.org/packages/cliffparnitzky/task-center).
+Install the extension via composer: [cliffparnitzky/task-center](https://packagist.org/packages/cliffparnitzky/task-center).
 
 
 Tracker
@@ -23,11 +21,11 @@ https://github.com/cliffparnitzky/TaskCenter/issues
 Compatibility
 -------------
 
-- min. version: Contao 3.3.0
-- max. version: Contao 3.3.x
+- min. version: Contao >= 3.3.0
+- max. version: Contao < 4.0.0
 
 
 Dependency
 ----------
 
-- There are no dependencies to other extensions, that have to be installed.
+There are no dependencies to other extensions, that have to be installed.
